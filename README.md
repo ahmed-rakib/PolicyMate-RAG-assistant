@@ -31,7 +31,7 @@ The application returns an answer alongside the passages supplied to the model, 
 
 ## Project Showcase
 
-### PolicyMate — Document Question Interface
+### PolicyMate - Document Question Interface
 
 Users can browse policy categories, choose a suggested question, or ask a question directly.
 
