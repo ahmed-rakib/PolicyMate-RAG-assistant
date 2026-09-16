@@ -1,0 +1,48 @@
+name: policymate
+
+services:
+  app:
+    build:
+      context: .
+
+    env_file:
+      - .env
+
+    environment:
+      CHAT_MODEL: qwen2.5:3b
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      HF_HOME: /home/appuser/.cache/huggingface
+      NO_PROXY: localhost,127.0.0.1,host.docker.internal
+
+    ports:
+      - "127.0.0.1:8000:8000"
+
+    volumes:
+      - type: bind
+        source: ./data/vector_store
+        target: /app/data/vector_store
+        read_only: true
+        bind:
+          create_host_path: false
+
+      - type: volume
+        source: hf_cache
+        target: /home/appuser/.cache/huggingface
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+
+    profiles:
+      - demo
+
+    command:
+      - tunnel
+      - --no-autoupdate
+      - --url
+      - http://app:8000
+
+    depends_on:
+      - app
+
+volumes:
+  hf_cache:
